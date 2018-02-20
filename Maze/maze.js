@@ -1,7 +1,3 @@
-// generates the maze and also solves it using Depth-first Search and Recusive Backtracker
-
-
-
 
 //defines the space between the cells of the grid and also defines the no of rows and cols
 var spacing=7;
