@@ -17,17 +17,16 @@ function setup() {
     createCanvas(1000,700);
     winHtml=createP('');
     restartButton=createButton('Restart');
-    for(let i=0;i<data.length;i++) {
-        let img=data[i];
-        //console.log(img);
-        img.resize(imgH,imgW);
-    }
     init();
     restartButton.mousePressed(function() {
        init(); 
     });
 }
 function init() {
+     for(let i=0;i<data.length;i++) {
+        let img=data[i];
+        img.resize(imgH,imgW);
+    }
     puzzleImage=random(data);
     puzzleData=[];
     for(let y=0;y<puzzleImage.height;y+=spacing) {
