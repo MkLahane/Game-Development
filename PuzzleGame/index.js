@@ -20,7 +20,11 @@ function setup() {
         //console.log(img);
         img.resize(imgH,imgW);
     }
+    init();
+}
+function init() {
     puzzleImage=random(data);
+    puzzleData=[];
     for(let y=0;y<puzzleImage.height;y+=spacing) {
         for(let x=0;x<puzzleImage.width;x+=spacing) {
             let img=puzzleImage.get(x,y,spacing,spacing);
