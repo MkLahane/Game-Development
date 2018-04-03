@@ -6,6 +6,7 @@ let emptySpot;
 let imgH=500;
 let imgW=500;
 let winHtml;
+let restartButton;
 function preload() {
     for(let i=1;i<=5;i++) {
         let img=loadImage('dog'+i+'.jpg');
@@ -15,12 +16,16 @@ function preload() {
 function setup() {
     createCanvas(1000,700);
     winHtml=createP('');
+    restartButton=createButton('Restart');
     for(let i=0;i<data.length;i++) {
         let img=data[i];
         //console.log(img);
         img.resize(imgH,imgW);
     }
     init();
+    restartButton.mousePressed(function() {
+       init(); 
+    });
 }
 function init() {
     puzzleImage=random(data);
