@@ -1,41 +1,32 @@
 class Ball {
-  float x;
-  float y;
-  float ySpeed;
-  float g;
-  float lift;
+  PVector pos;
+  PVector vel;
+  PVector acc;
   color col;
-  float r;
-  int score = 0;
-
-  Ball(float _x, float _y, color _col, float _r) {
-    x = _x;
-    y = _y;
-    ySpeed = 0;
-    g = 0.1;
-    lift = -4;
-    col = _col;
-    r = _r;
+  float r = 10;
+  
+  Ball(PVector _pos, color _col) {
+    col = getRandomColor();
+    pos = _pos.get();
+    acc = new PVector(0, 0);
+    vel = new PVector(0, 0);
   } 
   void show() {
-    fill(col);
     noStroke();
-    ellipse(x, y, r, r);
+    fill(col);
+    ellipse(pos.x, pos.y, r * 2, r * 2);
   } 
+  
   void update() {
-
-    y += ySpeed;
-    y = constrain(y, 0, height - 50);
-    ySpeed += g;
+    vel.add(acc);
+    vel.limit(8);
+    pos.add(vel);
+    acc.mult(0);
+    pos.y = constrain(pos.y, 0, height - 50);
   } 
-  void jump() {
-    ySpeed = 0;
-    ySpeed += lift;
-  }
-  boolean surpassed(Obstacle obs) {
-    if (obs.center.y - obs.r - obs.r * 0.7 > y) {
-      return true;
-    } 
-    return false;
+  
+  void applyForce(PVector f) {
+    acc.add(f);
   } 
+  
 } 
