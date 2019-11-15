@@ -64,7 +64,7 @@ class Vehicle {
                 }
               }
             }
-            if (closestD < 10) {
+            if (closestD < 13) {
               this.dead = true;
             }
             inputs.push(map(closestD, 0, SIGHT, 0, 1));

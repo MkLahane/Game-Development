@@ -1,7 +1,7 @@
 const SIGHT = 400;
 const LIFESPAN = 50;
 const TOTAL_VEHICLES = 500;
-const MUTATION_RATE = 0.2;
+const MUTATION_RATE = 0.1;
 let obstacles = [];
 let vehicles = [];
 let simulate = false;
@@ -260,6 +260,15 @@ function createVehicles() {
 function keyPressed() {
     if (key == 'g') {
         generate();
+    } else if (key == 'c') {
+        doneTracking = false;
+        doneTrackingButton.pressed = false;
+        buttonsMap["Tracks"].pressed = false;
+        obstacles = [];
+        innerTrack = [];
+        outerTrack = [];
+        buttonsMap["CheckPoints"].pressed = false;
+        checkPoints = [];
     }
     // if (key == ' ') {
     //     simulate = !simulate;
