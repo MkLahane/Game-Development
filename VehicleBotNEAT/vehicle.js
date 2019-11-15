@@ -8,7 +8,7 @@ class Vehicle {
         }
         this.time = 1;
         if (startPoint == null) {
-            this.pos = createVector(0, 0);
+            this.pos = createVector(-100, -100);
         } else {
           this.pos = startPoint.copy();  
         } //startPoint.copy();//createVector(width / 2, height / 2);
