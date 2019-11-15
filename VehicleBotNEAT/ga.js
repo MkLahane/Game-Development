@@ -19,13 +19,13 @@ function nextGeneration() {
     }
   
     for (let i = 0; i < TOTAL_VEHICLES; i++) {
-      //let mom = pickOne();
-      //let dad = pickOne();
-      //let child = mom.crossover(mom, dad);
-      //let childVehicle = new Vehicle(child);
-      //childVehicle.mutate(MUTATION_RATE);
-      //vehicles[i] = childVehicle;
-      vehicles[i] = pickOne(); 
+      let mom = pickOne();
+      let dad = pickOne();
+      let child = mom.crossover(mom, dad);
+      let childVehicle = new Vehicle(child);
+      childVehicle.mutate(MUTATION_RATE);
+      vehicles[i] = childVehicle;
+      //vehicles[i] = pickOne(); 
     }
     for (let i = 0; i < TOTAL_VEHICLES; i++) {
       savedVehicles[i].dispose();
@@ -50,21 +50,34 @@ function calculateFitness() {
     }
     
 }
-  
 function pickOne() {
-    let r = random(1);
-    let index = 0;
-    while (r > 0) {
-      r -= savedVehicles[index].fitness;
-      index++;
-    }
-    index--;
-    let parentBrain = savedVehicles[index].brain;
-    let childVehicle = new Vehicle(parentBrain);
-    // if (savedVehicles[index].finished) {
-    //   return childVehicle;
-    // }
-    //return parentBrain;
-    childVehicle.mutate(MUTATION_RATE);
-    return childVehicle;
+  let r = random(1);
+  let index = 0;
+  while (r > 0) {
+    r -= savedVehicles[index].fitness;
+    index++;
+  }
+  index--;
+  let parentBrain = savedVehicles[index].brain;
+  return parentBrain;
+  //childVehicle.mutate(MUTATION_RATE);
+  //return childVehicle;
 }
+  
+// function pickOne() {
+//     let r = random(1);
+//     let index = 0;
+//     while (r > 0) {
+//       r -= savedVehicles[index].fitness;
+//       index++;
+//     }
+//     index--;
+//     let parentBrain = savedVehicles[index].brain;
+//     let childVehicle = new Vehicle(parentBrain);
+//     // if (savedVehicles[index].finished) {
+//     //   return childVehicle;
+//     // }
+//     //return parentBrain;
+//     childVehicle.mutate(MUTATION_RATE);
+//     return childVehicle;
+// }
