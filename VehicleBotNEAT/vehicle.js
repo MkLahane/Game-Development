@@ -4,11 +4,11 @@ class Vehicle {
         if (brain) {
             this.brain = brain.copy();
         } else {
-            this.brain = new NeuralNetwork(this.numberOfRays, [this.numberOfRays * 2], 2);
+            this.brain = new NeuralNetwork(this.numberOfRays, [this.numberOfRays * this.numberOfRays], 2);
         }
         this.time = 1;
         if (startPoint == null) {
-            this.pos = createVector(-200, -200);
+            this.pos = createVector(-100, -100);
         } else {
           this.pos = startPoint.copy();  
         } //startPoint.copy();//createVector(width / 2, height / 2);
@@ -19,7 +19,7 @@ class Vehicle {
         this.dir = this.vel.heading();
         this.minViewAngle = -PI / 4;
         this.maxViewAngle = PI / 4;
-        this.maxSpeed = 30;
+        this.maxSpeed = 20;
         this.life = LIFESPAN;
         this.finished = false;
         this.dead = false;
@@ -35,7 +35,7 @@ class Vehicle {
         let angle = this.dir + PI / 2;
         fill(255, 175);
         stroke(255);
-        strokeWeight(1);
+        strokeWeight(2);
         push();
         translate(this.pos.x, this.pos.y);
         rotate(angle);
@@ -92,8 +92,8 @@ class Vehicle {
         //stroke(255, 255, 0);
         //strokeWeight(2);
         //line(currentGoal.a.x, currentGoal.a.y, currentGoal.b.x, currentGoal.b.y);
-        let d = linePointDistance(currentGoal.a, currentGoal.b, this.pos);
-        if (d < 10) {
+        let d = p5.Vector.dist(this.pos, checkPoints[this.index]);//linePointDistance(currentGoal.a, currentGoal.b, this.pos);
+        if (d < checkPointR) {
           this.index++;
           this.life = LIFESPAN;
           if (this.index === checkPoints.length) {
