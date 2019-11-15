@@ -1,7 +1,7 @@
 const SIGHT = 400;
-const LIFESPAN = 70;
+const LIFESPAN = 50;
 const TOTAL_VEHICLES = 500;
-const MUTATION_RATE = 0.1;
+const MUTATION_RATE = 0.2;
 let obstacles = [];
 let vehicles = [];
 let simulate = false;
@@ -18,22 +18,26 @@ let points = [];
 let doneTrackingButton;
 let doneTracking = false;
 let slider; 
+let innerTrack = []; 
+let outerTrack = [];
+let innerLen = -1; 
+let checkPointR = 60;
 function setup() {
     createCanvas(1400, 800);
     tf.setBackend('cpu');
     createVehicles();
+    slider = createSlider(1, 10, 1);
     doneTrackingButton = new Button("Done", width - 150, height - 100, 100, 50);
     for (let i = 0; i < buttonsList.length; i++) {
         let tempY = 150;
         let buttonName = buttonsList[i];
         buttonsMap[buttonName] = new Button(buttonName, width - 300, tempY + i * (50 + 30), 250, 50);
     }
-    slider = createSlider(1, 10, 1);
+    //meanPos = createVector(0, 0);
 }
 
 function gameLogic() {
     if (simulate) {
-        
         for (let i = vehicles.length - 1; i >= 0; i--) {
             vehicles[i].update();
             vehicles[i].checkProgress(checkPoints);
@@ -46,16 +50,23 @@ function gameLogic() {
             nextGeneration();
         }
     }
-} 
+}
 
 function draw() {
     background(0);
-    for (let obstacle of obstacles) {
-        obstacle.show();
+    
+    for (let track of innerTrack) {
+        track.show(color(255, 0, 0));
+    }
+    for (let track of outerTrack) {
+        track.show(color(0, 255, 0));
     }
     if (doneTracking) {
         doneTrackingButton.show();
         doneTrackingButton.hover(mouseX, mouseY);
+        for (let obstacle of obstacles) {
+            obstacle.show(color(255, 255, 255));
+        }
     }
     // stroke(0, 255, 0);
     // noFill();
@@ -71,12 +82,12 @@ function draw() {
             buttonsMap[buttonName].hover(mouseX, mouseY);
         }
     }
-    for (let vehicle of vehicles) {
-            vehicle.show();
-    }
     for (let n = 0; n < slider.value(); n++) {
-      gameLogic();   
-    } 
+        gameLogic();
+    }
+    for (let vehicle of vehicles) {
+        vehicle.show();
+    }
     if (startPoint != null) {
         noStroke();
         fill(255, 0, 0);
@@ -84,10 +95,12 @@ function draw() {
     }
     //checkPoints render 
     for (let checkPoint of checkPoints) {
-        strokeWeight(2);
-        stroke(0, 0, 200);
-        line(checkPoint.a.x, checkPoint.a.y, checkPoint.b.x, checkPoint.b.y);
+        noStroke();
+        fill(0, 0, 200, 25);
+        ellipse(checkPoint.x, checkPoint.y, checkPointR * 2);
+        //line(checkPoint.a.x, checkPoint.a.y, checkPoint.b.x, checkPoint.b.y);
     }
+    
 }
 function mousePressed() {
     if (doneTracking) {
@@ -97,6 +110,19 @@ function mousePressed() {
             let a = points[points.length - 1];
             let b = points[0];
             obstacles.push(new Boundary(a.x, a.y, b.x, b.y));
+            if (innerTrack.length == 0) {
+                for (let i = 0; i < obstacles.length; i++) {
+                    let a = obstacles[i].a;
+                    let b = obstacles[i].b;
+                    innerTrack.push(new Boundary(a.x, a.y, b.x, b.y));
+                }
+            } else {
+                for (let i = innerTrack.length; i < obstacles.length; i++) {
+                    let a = obstacles[i].a;
+                    let b = obstacles[i].b;
+                    outerTrack.push(new Boundary(a.x, a.y, b.x, b.y));
+                } 
+            }
             buttonsMap["Tracks"].pressed = false;
             points = [];
             doneTrackingButton.pressed = false;
@@ -129,6 +155,8 @@ function mousePressed() {
         }
         
     } else if (buttonsMap["CheckPoints"].pressed && mouseX < width - 300) {
+        createCheckPoints();
+        checkPoints.push(createVector(mouseX, mouseY));
         currentCheckPointStartX = mouseX;
         currentCheckPointStartY = mouseY;
     } else if (buttonsMap["Simulate"].pressed) {
@@ -141,13 +169,35 @@ function mousePressed() {
     } 
 }
 
-function mouseReleased() {
-    if (currentCheckPointStartX != null && currentCheckPointStartY != null) {
-        checkPoints.push(new Boundary(currentCheckPointStartX, currentCheckPointStartY, mouseX, mouseY));
-    }
-    currentCheckPointStartX = null;
-    currentCheckPointStartY = null;
+function createCheckPoints() {
+    // let innerTrackIndex = 0;
+    // let outerTrackIndex = 0;
+    // while (true) {
+        
+    // }
+    
+    // for (let i = 0; i < innerTrack.length; i++) {
+    //     let center = createVector(width / 2, height / 2);
+    //     let a = innerTrack[i].a.copy();
+    //     let b = innerTrack[i].b.copy();
+    //     let centerToa = p5.Vector.sub(a, center);
+    //     let centerTob = p5.Vector.sub(b, center);
+    //     let da = centerToa.mag();
+    //     let db = centerTob.mag();
+    //     let newA = center.add(centerToa.normalize().mult(da * 0.1));
+    //     let newB = center.add(centerTob.normalize().mult(db * 0.1));
+    //     outerTrack.push(new Boundary(newA.x, newA.y, newB.x, newB.y));
+    // }
 }
+
+
+// function mouseReleased() {
+//     if (currentCheckPointStartX != null && currentCheckPointStartY != null) {
+//         checkPoints.push(new Boundary(currentCheckPointStartX, currentCheckPointStartY, mouseX, mouseY));
+//     }
+//     currentCheckPointStartX = null;
+//     currentCheckPointStartY = null;
+// }
 // function mousePressed() {
 //     // if (addingCheckPoints && !simulate) {
 //     //     currentCheckPointStartX = mouseX;
@@ -188,6 +238,7 @@ function generate() {
             let innerA = p5.Vector.add(a, abInnerPerp);
             let innerB = p5.Vector.add(innerA, ab.copy().setMag(d));
             obstacles.push(new Boundary(innerA.x, innerA.y, innerB.x, innerB.y));
+            
         } else {
             let innerA = obstacles[obstacles.length - 1].b;
             let ba = p5.Vector.sub(a, b);
