@@ -19,7 +19,7 @@ let doneTrackingButton;
 let doneTracking = false;
 let slider; 
 function setup() {
-    createCanvas(1400, 900);
+    createCanvas(1400, 800);
     tf.setBackend('cpu');
     createVehicles();
     doneTrackingButton = new Button("Done", width - 150, height - 100, 100, 50);
