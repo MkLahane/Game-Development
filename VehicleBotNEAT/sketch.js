@@ -17,6 +17,7 @@ let buttonsMap = {};
 let points = [];
 let doneTrackingButton;
 let doneTracking = false;
+let slider; 
 function setup() {
     createCanvas(1400, 900);
     tf.setBackend('cpu');
@@ -27,8 +28,25 @@ function setup() {
         let buttonName = buttonsList[i];
         buttonsMap[buttonName] = new Button(buttonName, width - 300, tempY + i * (50 + 30), 250, 50);
     }
-
+    slider = createSlider(1, 10, 1);
 }
+
+function gameLogic() {
+    if (simulate) {
+        
+        for (let i = vehicles.length - 1; i >= 0; i--) {
+            vehicles[i].update();
+            vehicles[i].checkProgress(checkPoints);
+            vehicles[i].decide(obstacles);
+            if (vehicles[i].dead) {
+                savedVehicles.push(vehicles.splice(i, 1)[0]);
+            }
+        }
+        if (vehicles.length <= 0) {
+            nextGeneration();
+        }
+    }
+} 
 
 function draw() {
     background(0);
@@ -53,22 +71,12 @@ function draw() {
             buttonsMap[buttonName].hover(mouseX, mouseY);
         }
     }
-    if (simulate) {
-        for (let vehicle of vehicles) {
+    for (let vehicle of vehicles) {
             vehicle.show();
-        }
-        for (let i = vehicles.length - 1; i >= 0; i--) {
-            vehicles[i].update();
-            vehicles[i].checkProgress(checkPoints);
-            vehicles[i].decide(obstacles);
-            if (vehicles[i].dead) {
-                savedVehicles.push(vehicles.splice(i, 1)[0]);
-            }
-        }
-        if (vehicles.length <= 0) {
-            nextGeneration();
-        }
     }
+    for (let n = 0; n < slider.value(); n++) {
+      gameLogic();   
+    } 
     if (startPoint != null) {
         noStroke();
         fill(255, 0, 0);
